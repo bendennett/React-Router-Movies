@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import MovieList from "./Movies/MovieList";
+import Movie from "./Movies/Movie";
 
 import SavedList from './Movies/SavedList';
+
 
 const App = () => {
   const [savedList, setSavedList] = useState([]);
@@ -12,6 +16,7 @@ const App = () => {
       axios
         .get('http://localhost:5000/api/movies')
         .then(response => {
+          console.log("movies", response.data)
           setMovieList(response.data);
         })
         .catch(error => {
@@ -26,11 +31,21 @@ const App = () => {
   };
 
   return (
+    <Router>
     <div>
-      <SavedList list={savedList} />
-      <div>Replace this Div with your Routes</div>
+    <SavedList list={savedList} />
+      <Route exact path="/" render={() => <MovieList movie={movieList}/>} />
+      
+      <Route path="/movies/:id" render={(props) => <Movie {...props}addToSavedList={addToSavedList}/>} />
+
+      
+
+      
+      
     </div>
+    </Router>
   );
 };
+
 
 export default App;
